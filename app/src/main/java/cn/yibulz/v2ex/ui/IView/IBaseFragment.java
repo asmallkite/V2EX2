@@ -6,6 +6,10 @@ package cn.yibulz.v2ex.ui.IView;
 
 public interface IBaseFragment {
 
-        void showError(String error);
+    void showProgress();
+
+    void hideProgress();
+
+    void showError(String error);
 
 }

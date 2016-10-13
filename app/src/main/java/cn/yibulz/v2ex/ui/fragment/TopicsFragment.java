@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class TopicsFragment extends Fragment implements IFragment {
     private List<TopicBean> mBeanList = new ArrayList<>();
 
     RecyclerView mRecyclerView;
+    ProgressBar mProgressBar;
 
 
     public TopicsFragment() {
@@ -47,6 +49,7 @@ public class TopicsFragment extends Fragment implements IFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_topics, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.RV_hot_latest);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
         return view;
     }
 
@@ -80,6 +83,20 @@ public class TopicsFragment extends Fragment implements IFragment {
         mAdapter.addItems(beanArrayList);
     }
 
+
+    @Override
+    public void showProgress() {
+       if (mProgressBar != null) {
+           mProgressBar.setVisibility(View.VISIBLE);
+       }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+    }
 
     @Override
     public void showError(String error) {

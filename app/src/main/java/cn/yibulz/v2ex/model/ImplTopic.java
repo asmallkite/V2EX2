@@ -24,6 +24,7 @@ public class ImplTopic extends ImplBaseModel implements ITopic {
 
     @Override
     public void getTopicData(String category) {
+        mIFragment.showProgress();
         Subscription subscription = ApiManage.getInstance()
                 .getHotLatestApi()
                 .getTopicDataService(category)
@@ -37,11 +38,13 @@ public class ImplTopic extends ImplBaseModel implements ITopic {
 
                     @Override
                     public void onError(Throwable e) {
+                        mIFragment.hideProgress();
                         mIFragment.showError(e.getMessage());
                     }
 
                     @Override
                     public void onNext(ArrayList<TopicBean> beanArrayList) {
+                        mIFragment.hideProgress();
                         mIFragment.updateList(beanArrayList);
                     }
                 });
