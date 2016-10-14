@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,9 +27,10 @@ import cn.yibulz.v2ex.ui.IView.IFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TopicsFragment extends Fragment implements IFragment {
+public class TopicsFragment extends Fragment implements IFragment, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String HOT_OR_LATEST = "hot.json";
+    private Boolean isFirstLoad = true;
 
 
     ImplTopic mTopic;
@@ -38,6 +40,7 @@ public class TopicsFragment extends Fragment implements IFragment {
 
     RecyclerView mRecyclerView;
     ProgressBar mProgressBar;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     public TopicsFragment() {
@@ -58,6 +61,7 @@ public class TopicsFragment extends Fragment implements IFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_topics, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.RV_hot_latest);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
         return view;
@@ -71,18 +75,25 @@ public class TopicsFragment extends Fragment implements IFragment {
         loadData();
     }
 
+
     private void loadData() {
         if (mBeanList.size() > 0) {
             mAdapter.clearData();
         }
         if (getArguments() != null) {
             mTopic.getTopicData(getArguments().getString(HOT_OR_LATEST));
+            isFirstLoad = false;
         }
     }
 
     private void initView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,
+                R.color.colorPrimary,
+                R.color.cardview_dark_background,
+                R.color.cardview_light_background);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     private void initData() {
@@ -98,15 +109,20 @@ public class TopicsFragment extends Fragment implements IFragment {
 
     @Override
     public void showProgress() {
-       if (mProgressBar != null) {
-           mProgressBar.setVisibility(View.VISIBLE);
-       }
+           if (!isFirstLoad) {
+               mSwipeRefreshLayout.setRefreshing(true);
+           }else {
+               if (mProgressBar != null) {
+                   mProgressBar.setVisibility(View.VISIBLE);
+               }
+           }
     }
 
     @Override
     public void hideProgress() {
         if (mProgressBar != null) {
             mProgressBar.setVisibility(View.INVISIBLE);
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -122,5 +138,10 @@ public class TopicsFragment extends Fragment implements IFragment {
                         }
                     }).show();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        loadData();
     }
 }
