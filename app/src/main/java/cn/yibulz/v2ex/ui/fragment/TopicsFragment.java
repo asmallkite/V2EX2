@@ -45,6 +45,15 @@ public class TopicsFragment extends Fragment implements IFragment {
     }
 
 
+    public static TopicsFragment getInstance(String type) {
+        Bundle bundle = new Bundle();
+        bundle.putString(HOT_OR_LATEST, type);
+        TopicsFragment topicsFragment = new TopicsFragment();
+        topicsFragment.setArguments(bundle);
+        return topicsFragment;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,7 +75,9 @@ public class TopicsFragment extends Fragment implements IFragment {
         if (mBeanList.size() > 0) {
             mAdapter.clearData();
         }
-        mTopic.getTopicData(HOT_OR_LATEST);
+        if (getArguments() != null) {
+            mTopic.getTopicData(getArguments().getString(HOT_OR_LATEST));
+        }
     }
 
     private void initView() {

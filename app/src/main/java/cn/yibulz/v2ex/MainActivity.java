@@ -3,6 +3,8 @@ package cn.yibulz.v2ex;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +14,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TableLayout;
 
+import cn.yibulz.v2ex.adapter.MainFragmentPagerAdapter;
 import cn.yibulz.v2ex.ui.fragment.TopicsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private MainFragmentPagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +50,18 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new TopicsFragment()).commit();
+        
+        setupViewPager();
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    private void setupViewPager() {
+        mPagerAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter.addFragment(TopicsFragment.getInstance("hot.json"), "最热话题");
+        mPagerAdapter.addFragment(TopicsFragment.getInstance("latest.json"), "最新话题");
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(mPagerAdapter);
     }
 
     @Override
