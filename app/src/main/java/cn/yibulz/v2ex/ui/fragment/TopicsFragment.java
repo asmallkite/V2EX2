@@ -3,6 +3,7 @@ package cn.yibulz.v2ex.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -100,6 +101,15 @@ public class TopicsFragment extends Fragment implements IFragment {
 
     @Override
     public void showError(String error) {
-        Toast.makeText(getActivity(), "无网络", Toast.LENGTH_SHORT).show();
+        if (mRecyclerView != null) {
+            Snackbar.make(mRecyclerView, getString(R.string.snack_infor),
+                    Snackbar.LENGTH_LONG)
+                    .setAction("重试", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loadData();
+                        }
+                    }).show();
+        }
     }
 }
