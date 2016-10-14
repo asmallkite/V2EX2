@@ -91,8 +91,7 @@ public class TopicsFragment extends Fragment implements IFragment, SwipeRefreshL
         mRecyclerView.setAdapter(mAdapter);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorPrimary,
-                R.color.cardview_dark_background,
-                R.color.cardview_light_background);
+                android.R.color.holo_green_dark);
         mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
